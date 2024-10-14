@@ -26,10 +26,11 @@ const App: React.FC = () => {
             style={{
                 padding: "20px",
                 backgroundColor: colorMap.charcoal400,
-                height: "100vh",
             }}
         >
-            <Heading1 color="orange400">Book Management</Heading1>
+            <Heading1 color="orange400">
+                Book Management - Graeme Richmond
+            </Heading1>
             <RowContainer justifyContent="space-evenly" alignItems="start">
                 <FlexItem basis="50%">
                     <AddBook />
