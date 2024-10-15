@@ -1,10 +1,12 @@
+import { useState } from "react";
 import { colorMap } from "../styleVars/colors";
 import { ColContainer } from "./Layout/FlexContainer";
 import { Heading3 } from "./Typography/Heading";
 import { P1, P2 } from "./Typography/P";
 import { Button2 } from "./Buttons/Button1";
 import { useDispatch } from "react-redux";
-import { deleteBook } from "../features/bookReducer";
+import { removeBook } from "../features/bookReducer";
+import { deleteBook } from "../api/api";
 
 const BookCard = ({
     title,
@@ -19,8 +21,26 @@ const BookCard = ({
 }) => {
     const dispatch = useDispatch();
 
-    const handleDeleteBook = () => {
-        dispatch(deleteBook(id));
+    const [isDeleting, setIsDeleting] = useState(false);
+
+    const handleDeleteBook = async () => {
+        if (isDeleting) return;
+
+        const confirmDelete = window.confirm(
+            `Are you sure you want to delete "${title}"?`
+        );
+        if (!confirmDelete) return;
+
+        setIsDeleting(true);
+        try {
+            await deleteBook(id);
+            dispatch(removeBook(id));
+        } catch (error) {
+            console.error("Failed to delete book:", error);
+            alert("Failed to delete the book. Please try again.");
+        } finally {
+            setIsDeleting(false);
+        }
     };
 
     return (
@@ -44,7 +64,7 @@ const BookCard = ({
                 fontColorOnHover="white"
                 onClick={handleDeleteBook}
             >
-                Delete
+                {isDeleting ? "Deleting..." : "Delete"}
             </Button2>
         </ColContainer>
     );
