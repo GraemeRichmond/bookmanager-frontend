@@ -2,12 +2,14 @@ import { render, fireEvent, screen } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import BookCard from "../../components/BookCard";
-import booksReducer, { deleteBook } from "../../features/bookReducer";
+import booksReducer, { removeBook } from "../../features/bookReducer";
+import { deleteBook } from "../../api/api";
 
 // Mock the deleteBook action
+jest.mock("../../api/api");
 jest.mock("../../features/bookReducer", () => ({
     ...jest.requireActual("../../features/bookReducer"),
-    deleteBook: jest.fn(),
+    removeBook: jest.fn(),
 }));
 
 describe("BookCard", () => {
@@ -20,6 +22,7 @@ describe("BookCard", () => {
             },
         });
         store.dispatch = jest.fn();
+        (deleteBook as jest.Mock).mockResolvedValue(1);
     });
 
     it("renders book information correctly", () => {
@@ -53,6 +56,6 @@ describe("BookCard", () => {
 
         fireEvent.click(screen.getByText("Delete"));
 
-        expect(store.dispatch).toHaveBeenCalledWith(deleteBook(1));
+        expect(store.dispatch).toHaveBeenCalledWith(removeBook(1));
     });
 });
